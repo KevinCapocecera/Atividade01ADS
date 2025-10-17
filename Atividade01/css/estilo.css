@@ -1,0 +1,13 @@
+
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; line-height: 1.5; }
+header, footer { background: #004080; color: white; padding: 1em; }
+header h1, footer p { margin: 0; }
+nav ul { list-style: none; display: flex; gap: 1em; padding: 0; }
+nav a { color: white; text-decoration: none; }
+main { padding: 1em; }
+section, article, aside { margin-bottom: 2em; }
+fieldset { margin-bottom: 1em; padding: 1em; }
+label { display: block; margin-top: 0.5em; }
+input { width: 100%; padding: 0.3em; margin-top: 0.2em; }
+button { padding: 0.5em 1em; background: #004080; color: white; border: none; cursor: pointer; }
+button:hover { background: #0066cc; }
