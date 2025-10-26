@@ -1,13 +1,558 @@
+/* estilo.css
+   Sistema de Design completo (mobile-first)
+   Para a ONG Esperança — use junto com o HTML fornecido
+*/
 
-body { font-family: Arial, sans-serif; margin: 0; padding: 0; line-height: 1.5; }
-header, footer { background: #004080; color: white; padding: 1em; }
-header h1, footer p { margin: 0; }
-nav ul { list-style: none; display: flex; gap: 1em; padding: 0; }
-nav a { color: white; text-decoration: none; }
-main { padding: 1em; }
-section, article, aside { margin-bottom: 2em; }
-fieldset { margin-bottom: 1em; padding: 1em; }
-label { display: block; margin-top: 0.5em; }
-input { width: 100%; padding: 0.3em; margin-top: 0.2em; }
-button { padding: 0.5em 1em; background: #004080; color: white; border: none; cursor: pointer; }
-button:hover { background: #0066cc; }
+/* =========================================================
+   Design tokens: cores, tipografia, espaçamento, sombras
+   ========================================================= */
+   :root{
+    /* --- Paleta (mínimo 8 cores) --- */
+    --color-primary-500: #0b63b7; /* azul primário */
+    --color-primary-700: #084f93;
+    --color-secondary-500: #00a48a; /* verde secundário */
+    --color-accent-500: #ffb020; /* amarelo / destaque */
+    --color-neutral-900: #0f1720;
+    --color-neutral-700: #334155;
+    --color-neutral-400: #94a3b8;
+    --color-neutral-100: #f1f5f9;
+    --color-danger-500: #e11d48; /* vermelho */
+    --color-success-500: #16a34a; /* verde sucesso */
+    --color-muted-500: #e6edf3; /* background suave */
+  
+    /* Semantic */
+    --bg: var(--color-neutral-100);
+    --text: var(--color-neutral-900);
+    --muted: var(--color-neutral-400);
+  
+    /* --- Tipografia (mínimo 5 tamanhos) --- */
+    --font-family-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    --fs-xxl: 2.25rem; /* 36px */
+    --fs-xl: 1.5rem;   /* 24px */
+    --fs-lg: 1.125rem; /* 18px */
+    --fs-md: 1rem;     /* 16px */
+    --fs-sm: 0.875rem; /* 14px */
+    --fs-xs: 0.75rem;  /* 12px */
+  
+    /* --- Espaçamento modular (8px base) --- */
+    --space-1: 8px;
+    --space-2: 16px;
+    --space-3: 24px;
+    --space-4: 32px;
+    --space-5: 48px;
+    --space-6: 64px;
+  
+    /* --- Grid system --- */
+    --container-max: 1200px;
+    --gutter: var(--space-2);
+  
+    /* Elevation / sombras */
+    --shadow-sm: 0 1px 2px rgba(16,24,40,0.05);
+    --shadow-md: 0 6px 18px rgba(16,24,40,0.08);
+    --shadow-lg: 0 20px 40px rgba(2,6,23,0.12);
+  
+    /* Border radius */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 24px;
+  
+    /* Transitions */
+    --ease: cubic-bezier(.2,.9,.2,1);
+    --duration: 180ms;
+  }
+  
+  /* =========================================================
+     Breakpoints (mínimo 5 pontos)
+     mobile-first
+     ========================================================= */
+  /* breakpoints used:
+     bp-1: >= 480px
+     bp-2: >= 640px (small tablets)
+     bp-3: >= 768px (tablets)
+     bp-4: >= 1024px (small desktop)
+     bp-5: >= 1280px (large desktop)
+  */
+  @media (min-width: 480px)  { :root { --bp: 480px; } }
+  @media (min-width: 640px)  { :root { --bp: 640px; } }
+  @media (min-width: 768px)  { :root { --bp: 768px; } }
+  @media (min-width: 1024px) { :root { --bp: 1024px; } }
+  @media (min-width: 1280px) { :root { --bp: 1280px; } }
+  
+  /* =========================================================
+     Base / Reset
+     ========================================================= */
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: var(--font-family-sans);
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.45;
+    font-size: 16px;
+  }
+  
+  /* Typography */
+  h1 { font-size: var(--fs-xxl); margin: 0 0 var(--space-3); }
+  h2 { font-size: var(--fs-xl); margin: 0 0 var(--space-2); }
+  h3 { font-size: var(--fs-lg); margin: 0 0 var(--space-1); }
+  p, address { font-size: var(--fs-md); margin: 0 0 var(--space-2); }
+  
+  /* Links */
+  a { color: var(--color-primary-500); text-decoration: none; transition: color var(--duration) var(--ease); }
+  a:hover, a:focus { color: var(--color-primary-700); outline: none; }
+  
+  /* Utility */
+  .container {
+    width: calc(100% - var(--gutter) * 2);
+    max-width: var(--container-max);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+  
+  /* =========================================================
+     Layout: Grid principal (CSS Grid) + header/footer
+     ========================================================= */
+  body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+  }
+  
+  /* Header */
+  header {
+    background: linear-gradient(90deg, rgba(11,99,183,0.06), rgba(0,164,138,0.04));
+    padding: var(--space-3) 0;
+    box-shadow: var(--shadow-sm);
+  }
+  header .container {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    justify-content: space-between;
+  }
+  
+  /* Brand */
+  header h1 {
+    font-size: var(--fs-lg);
+    color: var(--color-primary-700);
+    margin: 0;
+  }
+  
+  /* Navigation: desktop & mobile */
+  nav {
+    position: relative;
+  }
+  
+  /* Basic nav list */
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    align-items: center;
+  }
+  
+  /* Nav links */
+  nav a {
+    padding: calc(var(--space-1) / 2) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+  }
+  nav a:hover, nav a:focus {
+    background: rgba(11,99,183,0.06);
+  }
+  
+  /* Dropdown support (for submenu) */
+  /* HTML example expected:
+     <li class="has-submenu">
+       <a href="#">Projetos</a>
+       <ul class="submenu"><li>..</li></ul>
+     </li>
+  */
+  nav li {
+    position: relative;
+  }
+  nav .submenu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 200px;
+    background: #fff;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-2);
+    z-index: 50;
+  }
+  nav li:focus-within > .submenu,
+  nav li:hover > .submenu { display: block; }
+  
+  /* Mobile: hamburger (CSS only expects a .nav-toggle checkbox in markup OR will stack the nav) */
+  /* If you don't want to add markup, the nav will still collapse to a stacked list on small screens */
+  .nav-toggle {
+    display: none; /* optional checkbox to control menu in accessible markup */
+  }
+  
+  /* Responsive: mobile-first collapse */
+  @media (max-width: 639px) {
+    nav ul {
+      display: none;
+      flex-direction: column;
+      gap: var(--space-2);
+      background: white;
+      padding: var(--space-2);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      position: absolute;
+      right: 0;
+      top: calc(100% + var(--space-1));
+      z-index: 60;
+      min-width: 200px;
+    }
+  
+    /* If the author adds a checkbox .nav-toggle and labels, this rule shows the menu when checked */
+    .nav-toggle:checked + nav ul { display: flex; }
+  
+    /* Provide a default visible mobile row (hamburger) */
+    .mobile-nav-row {
+      display:flex;
+      align-items:center;
+      gap: var(--space-2);
+    }
+  
+    /* make header brand smaller */
+    header h1 { font-size: var(--fs-md); }
+  }
+  
+  /* Desktop: show inline nav */
+  @media (min-width: 640px) {
+    nav ul { display: flex !important; position: static; background: transparent; padding: 0; box-shadow: none; }
+  }
+  
+  /* Main section layout using CSS Grid */
+  main {
+    padding: var(--space-4) 0;
+  }
+  main .container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  /* On larger screens use 2-column layout */
+  @media (min-width: 768px) {
+    main .container {
+      grid-template-columns: 1fr 360px;
+      align-items: start;
+    }
+  }
+  
+  /* Footer */
+  footer {
+    background: white;
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--muted);
+    text-align: center;
+    font-size: var(--fs-sm);
+  }
+  
+  /* =========================================================
+     Custom 12-column grid utilities
+     Usage: .row > .col.col-6  (col count from 1..12)
+     ========================================================= */
+  .row {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--gutter);
+    width: 100%;
+  }
+  .col { grid-column: span 12; }
+  
+  /* column spans for responsive usage */
+  @media (min-width: 640px) {
+    .col-sm-1 { grid-column: span 1; } .col-sm-2 { grid-column: span 2; } .col-sm-3 { grid-column: span 3; }
+    .col-sm-4 { grid-column: span 4; } .col-sm-5 { grid-column: span 5; } .col-sm-6 { grid-column: span 6; }
+    .col-sm-7 { grid-column: span 7; } .col-sm-8 { grid-column: span 8; } .col-sm-9 { grid-column: span 9; }
+    .col-sm-10 { grid-column: span 10; } .col-sm-11 { grid-column: span 11; } .col-sm-12 { grid-column: span 12; }
+  }
+  @media (min-width: 1024px) {
+    .col-lg-1 { grid-column: span 1; } .col-lg-2 { grid-column: span 2; } .col-lg-3 { grid-column: span 3; }
+    .col-lg-4 { grid-column: span 4; } .col-lg-6 { grid-column: span 6; } .col-lg-12 { grid-column: span 12; }
+  }
+  
+  /* =========================================================
+     Components
+     ========================================================= */
+  
+  /* --- Cards (projetos, destaques) --- */
+  .card {
+    background: #fff;
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  
+  .card__media {
+    display:block;
+    width:100%;
+    height:160px;
+    object-fit:cover;
+    border-radius: calc(var(--radius-md) - 4px);
+    margin-bottom: var(--space-2);
+    background: var(--color-muted-500);
+  }
+  .card__title { font-size: var(--fs-lg); margin-bottom: var(--space-1); }
+  .card__desc { color: var(--muted); font-size: var(--fs-sm); }
+  
+  /* Card grid example: responsive row of cards */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--space-3);
+  }
+  @media (min-width: 640px) {
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1024px) {
+    .cards-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  
+  /* --- Buttons with states --- */
+  .button {
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: var(--fs-sm);
+    transition: transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+  }
+  .button-primary {
+    background: linear-gradient(180deg,var(--color-primary-500), var(--color-primary-700));
+    color: white;
+    box-shadow: 0 6px 12px rgba(11,99,183,0.12);
+  }
+  .button-primary:hover { transform: translateY(-2px); }
+  .button-primary:active { transform: translateY(0); box-shadow: none; }
+  .button-secondary {
+    background: white;
+    border: 1px solid var(--muted);
+    color: var(--text);
+  }
+  .button:disabled,
+  .button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  /* focus visible */
+  .button:focus-visible { outline: 3px solid rgba(11,99,183,0.14); outline-offset: 2px; }
+  
+  /* Button small / large */
+  .button--sm { padding: 6px 10px; font-size: var(--fs-xs); border-radius: var(--radius-sm); }
+  .button--lg { padding: 14px 20px; font-size: var(--fs-md); border-radius: var(--radius-lg); }
+  
+  /* --- Formulários estilizados com validação visual --- */
+  .form {
+    background: #fff;
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+  .form-group { margin-bottom: var(--space-2); }
+  label { display:block; font-weight:600; margin-bottom: 6px; font-size: var(--fs-sm); }
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea,
+  select {
+    width:100%;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid #e6edf3;
+    background: #fff;
+    font-size: var(--fs-md);
+    transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: 0 4px 14px rgba(11,99,183,0.08);
+  }
+  
+  /* Validation states */
+  .input-error {
+    border-color: var(--color-danger-500) !important;
+    box-shadow: 0 4px 14px rgba(225,29,72,0.06);
+  }
+  .input-success {
+    border-color: var(--color-success-500) !important;
+    box-shadow: 0 4px 14px rgba(16,185,129,0.06);
+  }
+  .form-help {
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+  .form-error {
+    color: var(--color-danger-500);
+    font-size: var(--fs-xs);
+    margin-top: 6px;
+  }
+  
+  /* Example required marker */
+  .required:after { content: "*"; color: var(--color-danger-500); margin-left:6px; font-size: var(--fs-xs); }
+  
+  /* --- Badges / Tags / Emblemas --- */
+  .badge {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: var(--fs-xs);
+    border-radius: 999px;
+    background: var(--color-muted-500);
+    color: var(--color-neutral-900);
+    font-weight: 600;
+  }
+  .badge--primary { background: linear-gradient(90deg,var(--color-primary-500),var(--color-primary-700)); color: white; }
+  .badge--success { background: var(--color-success-500); color: white; }
+  .badge--muted { background: var(--muted); color: var(--text); }
+  
+  /* --- Alerts / Toasts --- */
+  /* Alert types: .alert .alert--success .alert--danger .alert--info */
+  .alert {
+    display:flex;
+    gap: var(--space-2);
+    align-items:flex-start;
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    background: white;
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid transparent;
+  }
+  .alert--success { border-left-color: var(--color-success-500); }
+  .alert--danger { border-left-color: var(--color-danger-500); }
+  .alert--info { border-left-color: var(--color-primary-500); }
+  .alert__title { font-weight:700; margin:0; font-size:var(--fs-sm); }
+  .alert__msg { margin: 4px 0 0; color: var(--muted); font-size: var(--fs-sm); }
+  
+  /* --- Modal (simple CSS modal) --- */
+  /* Usage: add .modal and .modal.open on the modal element to show (JS toggles .open) */
+  .modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+  }
+  .modal.open { display: flex; }
+  .modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(2,6,23,0.48);
+  }
+  .modal__panel {
+    position: relative;
+    z-index: 10;
+    width: calc(100% - var(--space-4));
+    max-width: 720px;
+    background: #fff;
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  /* modal header / close */
+  .modal__close {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    background: transparent;
+    border: none;
+    font-size: var(--fs-lg);
+    cursor: pointer;
+  }
+  
+  /* =========================================================
+     Small components & utilities
+     ========================================================= */
+  
+  /* Helpers */
+  .text-center { text-align:center; }
+  .mt-1 { margin-top: var(--space-1); }
+  .mt-2 { margin-top: var(--space-2); }
+  .mb-2 { margin-bottom: var(--space-2); }
+  .p-2 { padding: var(--space-2); }
+  .p-3 { padding: var(--space-3); }
+  
+  /* Flex utilities */
+  .flex { display:flex; }
+  .flex-center { display:flex; align-items:center; justify-content:center; }
+  .flex-col { display:flex; flex-direction:column; }
+  .gap-1 { gap: var(--space-1); }
+  .gap-2 { gap: var(--space-2); }
+  
+  /* Visually hidden (accessibility) */
+  .sr-only {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  
+  /* =========================================================
+     Accessibility & focus management
+     ========================================================= */
+  :focus { outline: none; }
+  :focus-visible { outline: 3px solid rgba(11,99,183,0.14); outline-offset: 3px; }
+  
+  /* =========================================================
+     Example styles for the HTML provided (quick polish)
+     ========================================================= */
+  main section {
+    margin-bottom: var(--space-4);
+    background: white;
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  /* Figure styles */
+  figure { margin: 0; display: flex; gap: var(--space-3); align-items: center; }
+  figure img { border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); }
+  
+  /* Contact/address block */
+  address p { margin: 0 0 6px; }
+  
+  /* Small responsive tweaks */
+  @media (min-width: 1024px) {
+    header h1 { font-size: var(--fs-xl); }
+    .container { padding-left: calc(var(--gutter) + 4px); padding-right: calc(var(--gutter) + 4px); }
+  }
+  
+  /* =========================================================
+     Notes for integration:
+     - For mobile hamburger: add a checkbox input with class "nav-toggle" 
+       and a label that toggles it. Example markup inside header:
+       <input id="nav-toggle" class="nav-toggle" type="checkbox" />
+       <label for="nav-toggle" class="mobile-toggle">☰</label>
+       Then the nav ul will show when the checkbox is checked.
+     - For dropdowns, add .has-submenu around items that include a .submenu <ul>.
+     - For modals, toggle the .open class with JS on the .modal element.
+     - For form validation, add .input-error or .input-success on input elements.
+     ========================================================= */
+    
